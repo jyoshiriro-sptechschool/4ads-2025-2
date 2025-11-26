@@ -69,15 +69,17 @@ jobs:
 
             export IP_PORTA_API=${{ secrets.REMOTE_HOST_PRIVADO }}:8080
             echo "Variável de IP e porta da API criada: $IP_PORTA_API"
+
+            cd /home/${{ secrets.REMOTE_USER }}/frontend
             
-            envsubst '${IP_PORTA_API}' < /home/${{ secrets.REMOTE_USER }}/frontend/docker/default.conf.template > /home/${{ secrets.REMOTE_USER }}/frontend/docker/default.conf
+            envsubst '${IP_PORTA_API}' < ./docker/default.conf.template > ./docker/default.conf
             echo "Arquivo default.conf do ngnix criado"
 
             docker stop frontend || true
             docker rm frontend || true
             echo "Container anterior parado e excluído"
 
-            docker build -t nginx-sptech -f .frontend/docker/Dockerfile .
+            docker build -t nginx-sptech -f ./docker/Dockerfile .
             echo "Imagem docker recriada"
 
             docker run -d --network host --name frontend nginx-sptech
